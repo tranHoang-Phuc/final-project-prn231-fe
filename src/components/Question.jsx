@@ -60,7 +60,8 @@ export default function Question({
             {questionTags.map((tag, index) => (
               <li
                 key={index}
-                className="bg-gray-200 font-bold text-gray-600 px-2 py-1 rounded-md text-sm"
+                onClick={() => navigate(`/questions/tagged/${tag.tagName}`)}
+                className="bg-gray-200 font-bold text-gray-600 px-2 py-1 rounded-md text-sm cursor-pointer"
               >
                 {tag.tagName}
               </li>

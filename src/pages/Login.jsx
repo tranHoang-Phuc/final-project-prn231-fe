@@ -13,26 +13,27 @@ export default function Login() {
     const googleClientId = OauthConfig.clientId;
 
     const targetUrl = `${authUrl}?redirect_uri=${encodeURIComponent(callBackUrl)}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
-
     window.location.href = targetUrl;
   }
   
-  useEffect(() => {
-    
-    axios.post(`${BaseUrl.uri}/auth/introspect`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
+    useEffect(() => {
+      if(token) {
+        axios.post(`${BaseUrl.uri}/auth/introspect`,{}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+      }).then((response) => {
+        if(!response.data.data.isValid) {
+          navigate("/login");
+        } else {
+          navigate("/");
         }
-    }).then((response) => {
-      if(!response.data.data.isValid) {
-        navigate("/login");
-      } else {
-        navigate("/");
+      }).catch((error) => {
+        console.log(error);
+      });
       }
-    }).catch((error) => {
-      console.log(error);
-    });
-  },[])
+      
+    },[])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 -mt-20">
