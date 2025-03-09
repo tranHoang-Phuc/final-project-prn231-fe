@@ -13,11 +13,7 @@ export default function Header() {
   const isLogin = location.pathname === "/login";
   const accessToken = getToken();
 
-  useEffect(() => {
-    if (!accessToken && !isLogin) {
-      navigate("/login");
-    }
-  }, [accessToken, navigate, isLogin]);
+  
 
   useEffect(() => {
     function handleClickOutside(event) {

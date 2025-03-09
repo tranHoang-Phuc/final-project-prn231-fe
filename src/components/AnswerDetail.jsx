@@ -45,9 +45,29 @@ export default function AnswerDetail({
       element.innerText = currentValue + 1;  
      });
   }
+
+  const acceptAnswer = (answerId) => {
+    axios
+      .put(
+        `${BaseUrl.uri}/answer/${questionId}/answers/${answerId}/approve`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+  };
+
   return (
     <>
       <div className="max-w-5xl mx-auto border-b border-gray-300 bg-white p-5">
+        {isApproved && (
+          <button 
+          onClick={() => acceptAnswer(id)}
+          className='text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl'
+          >Accept</button>
+        )}
         <div className="flex">
           <div>
             <ul>
