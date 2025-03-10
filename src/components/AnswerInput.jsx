@@ -95,9 +95,9 @@ export default function AnswerInput({setNewAnswer, questionId}) {
     ],
     []
   );
-  const handleChange = (content ) => {
+  const handleChange = (content) => {
     console.log(content, statusEditor);
-    if (content === "" && !statusEditor){
+    if (!content && !statusEditor){
       console.log("statusEditor", statusEditor);
       return;
 
@@ -129,8 +129,11 @@ export default function AnswerInput({setNewAnswer, questionId}) {
       })
       .then((response) => {
         setNewAnswer(response.data.data);
-        setStatusEditor(false);
-        setDetails("");
+         setStatusEditor(false);
+        // setDetails("");
+        quillRef.current.getEditor().enable(false);
+        quillRef.current.getEditor().setContents([]);
+        quillRef.current.getEditor().enable(true);
         toast("Your answer has been posted", {
           type: "success",
         });
