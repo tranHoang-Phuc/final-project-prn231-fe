@@ -3,15 +3,18 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useMemo, useRef, useState, useEffect} from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 import { BaseUrl } from "../configurations/config";
 import { getToken } from "../services/localStorageService";
 
 
-export default function AnswerInput() {
+export default function AnswerInput({setNewAnswer, questionId}) {
   const token = getToken();
   const quillRef = useRef(null); 
   const [details, setDetails] = useState("");
   const [imageList, setImageList] = useState([]);
+  const [statusEditor, setStatusEditor] = useState(true);
+  
   const getImagesFromHTML = (html) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
@@ -92,7 +95,13 @@ export default function AnswerInput() {
     ],
     []
   );
-  const handleChange = (content) => {
+  const handleChange = (content ) => {
+    console.log(content, statusEditor);
+    if (content === "" && !statusEditor){
+      console.log("statusEditor", statusEditor);
+      return;
+
+    }
     const newImages = getImagesFromHTML(content);
     const deletedImages = imageList.filter((img) => !newImages.includes(img));
     if (deletedImages.length > 0) {
@@ -105,8 +114,43 @@ export default function AnswerInput() {
     setImageList(newImages);
     setDetails(content);
   };
+
+  const postAnswer = () => {
+    const content = quillRef.current.getEditor().root.innerHTML;
+    if (content.length < 50) {
+      toast("Your answer is too short. At least 50 characters", {
+        type: "error",
+      });
+      return;
+    }
+    axios
+      .post(`${BaseUrl.uri}/question/${questionId}/answers`, { content }, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setNewAnswer(response.data.data);
+        setStatusEditor(false);
+        setDetails("");
+        toast("Your answer has been posted", {
+          type: "success",
+        });
+      })
+
+  };
   return (
     <>
+    <ToastContainer
+              position="bottom-left"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
       <div className="max-w-5xl mx-auto bg-white p-5">
         <div className="mb-5">
           <h2 className="text-2xl font-normal">Your Answer</h2>
@@ -126,7 +170,7 @@ export default function AnswerInput() {
             className="bg-white p-2 h-64"
           />
           <div className="flex justify-end mt-10">
-            <button className="bg-blue-500 text-white px-5 py-2 rounded-lg mt-3 hover:bg-blue-600 hover:opacity-90">
+            <button onClick={postAnswer} className="bg-blue-500 text-white px-5 py-2 rounded-lg mt-3 hover:bg-blue-600 hover:opacity-90">
               Post Your Answer
             </button>
           </div>
