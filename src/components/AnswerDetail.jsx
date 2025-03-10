@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowUp, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BaseUrl } from "../configurations/config";
 import axios from "axios";
 import { getToken } from "../services/localStorageService";
@@ -18,6 +18,7 @@ export default function AnswerDetail({
 }) {
   const token = getToken();
   const navigate = useNavigate();
+  const [isAccepted, setIsAccepted] = useState(isApproved);
   useEffect(() => {
     document.querySelectorAll(".ql-syntax").forEach((el) => {
       el.classList.add(
@@ -56,13 +57,15 @@ export default function AnswerDetail({
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      ).then((response) => {
+        setIsAccepted(true);
+      });
   };
 
   return (
     <>
       <div className="max-w-5xl mx-auto border-b border-gray-300 bg-white p-5">
-        {isApproved && (
+        {!  isAccepted && (
           <button 
           onClick={() => acceptAnswer(id)}
           className='text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl'
@@ -88,7 +91,7 @@ export default function AnswerDetail({
                   />
                 </button>
               </li>
-              {isApproved && (
+              {isAccepted && (
                 <li>
                   <button className=" px-2 py-2 ">
                     <Check size={24} className="text-green-500" />

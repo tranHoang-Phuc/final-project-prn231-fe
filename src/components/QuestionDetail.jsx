@@ -22,7 +22,7 @@ export default function QuestionDetail({
   createdUser,
   answers,
 }) {
-  const [isVoted, setIsVoted] = useState(false);
+  const [newAnswer, setNewAnswer] = useState(null);
   const isBelong = isBelongTo(createdUser.id);
   const token = getToken();
   const converDate = (date) => {
@@ -38,8 +38,7 @@ export default function QuestionDetail({
   };
 
   const voteQuestion = (questionId, mode) => {
-    setIsVoted(isVoted === false ? true : false);
-    if (isVoted) {
+    
       axios
       .put(
         `${BaseUrl.uri}/question/${questionId}/${mode}`,
@@ -65,10 +64,8 @@ export default function QuestionDetail({
             type: "error",
           });
         }
-      }).finally(() => {
-        setIsVoted(false);
       });
-    }
+    
     
   };
 
@@ -210,7 +207,8 @@ export default function QuestionDetail({
       {answers.map((answer) => (
         <AnswerDetail
           key={answer.id}
-          questionId={answer.id}
+          id={answer.id}
+          questionId={id}
           content={answer.content}
           isApproved={answer.isApproved}
           createdAt={converDate(answer.createdAt)}
@@ -219,8 +217,24 @@ export default function QuestionDetail({
           createdUser={answer.createdUser}
         />
       ))}
+      {newAnswer &&(
+        <AnswerDetail
+          key={newAnswer.id}
+          id={newAnswer.id}
+          questionId={id}
+          content={newAnswer.content}
+          isApproved={newAnswer.isApproved}
+          createdAt={converDate(newAnswer.createdAt)}
+          updatedAt={converDate(newAnswer.updatedAt)}
+          votes={newAnswer.answerVotes}
+          createdUser={newAnswer.createdUser}
+        />
+      )}
 
-      <AnswerInput />
+      <AnswerInput 
+        setNewAnswer={setNewAnswer}
+        questionId={id}
+      />
     </>
   );
 }
