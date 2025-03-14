@@ -25,6 +25,10 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleSearch = (searchString) => {
+
+  }
+
   return (
     <div className="bg-white border-b shadow-sm sticky top-0 z-50">
       <header className="flex justify-center py-[10px] relative">
@@ -56,6 +60,12 @@ export default function Header() {
                 className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                 placeholder="Search..."
                 onFocus={() => setShowPopup(true)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleSearch(event.target
+                      .value);
+                  }
+                }}
               />
               {!accessToken && !isLogin && (
                 <button
