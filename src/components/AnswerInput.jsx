@@ -96,11 +96,10 @@ export default function AnswerInput({setNewAnswer, questionId}) {
     []
   );
   const handleChange = (content) => {
-    console.log(content, statusEditor);
-    if (!content && !statusEditor){
-      console.log("statusEditor", statusEditor);
-      return;
-
+    console.log("content status", content + " " + statusEditor);
+    if (content=== "<p><br></p>" && !statusEditor){
+        console.log("statusEditor", statusEditor);
+        return;
     }
     const newImages = getImagesFromHTML(content);
     const deletedImages = imageList.filter((img) => !newImages.includes(img));
@@ -119,7 +118,7 @@ export default function AnswerInput({setNewAnswer, questionId}) {
     const content = quillRef.current.getEditor().root.innerHTML;
     if (content.length < 50) {
       toast("Your answer is too short. At least 50 characters", {
-        type: "error",
+        type: "error", autoClose:3000
       });
       return;
     }
@@ -129,11 +128,8 @@ export default function AnswerInput({setNewAnswer, questionId}) {
       })
       .then((response) => {
         setNewAnswer(response.data.data);
-         setStatusEditor(false);
-        // setDetails("");
-        quillRef.current.getEditor().enable(false);
-        quillRef.current.getEditor().setContents([]);
-        quillRef.current.getEditor().enable(true);
+        setTimeout(() => setStatusEditor(false), 0);
+        setDetails("");
         toast("Your answer has been posted", {
           type: "success",
         });
@@ -147,7 +143,7 @@ export default function AnswerInput({setNewAnswer, questionId}) {
               autoClose={5000}
               hideProgressBar={false}
               newestOnTop={false}
-              closeOnClick
+              closeOnClick={true}
               rtl={false}
               pauseOnFocusLoss
               draggable
@@ -164,7 +160,7 @@ export default function AnswerInput({setNewAnswer, questionId}) {
         <div>
           <ReactQuill
             ref={quillRef}
-            placeholder="Eplane your solution here... At least 50 characters"
+            placeholder="Explane your solution here... At least 50 characters"
             theme="snow"
             value={details}
             onChange={handleChange}
