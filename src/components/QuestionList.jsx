@@ -46,7 +46,6 @@ export default function QuestionList({tagName}) {
   useEffect(() => {
     
     const tags = tagName ? [tagName].join(",") : null;
-    console.log(tagName);
     axios.get(`${BaseUrl.uri}/question`, {
       params: {
           pageSize: perPage,

@@ -83,7 +83,6 @@ export default function QuestionDetail({
       );
     });
     document.querySelectorAll(".question-content a").forEach((a) => {
-      console.log(a);
       a.classList.add("text-blue-600", "underline", "hover:text-blue-800");
     });
   }, []);

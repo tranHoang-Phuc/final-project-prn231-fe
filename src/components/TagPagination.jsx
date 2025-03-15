@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function TagPagination({ totalPages, currentPage, setCurrentPage }) {
-  console.log(totalPages);
   const maxPageDisplay = 5;
   let pages = [];
 

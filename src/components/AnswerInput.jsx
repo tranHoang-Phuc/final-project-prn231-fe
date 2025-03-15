@@ -96,9 +96,7 @@ export default function AnswerInput({setNewAnswer, questionId}) {
     []
   );
   const handleChange = (content) => {
-    console.log("content status", content + " " + statusEditor);
     if (content=== "<p><br></p>" && !statusEditor){
-        console.log("statusEditor", statusEditor);
         return;
     }
     const newImages = getImagesFromHTML(content);

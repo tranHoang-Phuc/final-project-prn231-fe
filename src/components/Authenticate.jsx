@@ -10,7 +10,6 @@ export default function Authenticate() {
 
   useEffect(() => {
     const authenCode = new URLSearchParams(window.location.search).get("code");
-    console.log(authenCode);
     if (authenCode) {
       axios.post(`${BaseUrl.uri}/auth/login`, { token: authenCode })
         .then((response) => {
