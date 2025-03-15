@@ -20,7 +20,6 @@ export default function TagInput({setTags, currentPage, setTotalPages, perPage})
 
 
   useEffect(() => {
-    // Fetch tags from API
     axios
       .get(`${BaseUrl.uri}/tag?keyword=${keyword}&pageIndex=${currentPage}`)
       .then((res) => {

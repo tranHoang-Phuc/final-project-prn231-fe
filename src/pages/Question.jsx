@@ -15,7 +15,6 @@ export default function Question() {
       ,{headers: {Authorization: `Bearer ${token}`}}
     )
     .then((response) => {
-      console.log(response.data.data)
       setQuestion(response.data.data) 
     })
   }, [])

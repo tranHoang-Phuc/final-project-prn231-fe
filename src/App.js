@@ -8,6 +8,7 @@ import QuestionCreation from './pages/QuestionCreation';
 import Questions from './pages/Questions';
 import Tags from './pages/Tags';
 import Question from './pages/Question';
+import EditQuestion from './pages/EditQuestion';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path='/questions/:tagged?/:tagName?' element={<Questions/>} />
         <Route path='/tags' element={<Tags/>} />
         <Route path='/questions/detail/:id' element={<Question/>} />
+        <Route path='/question/edit/:id' element={<EditQuestion/>} />
       </Routes>
     </Router>
   );

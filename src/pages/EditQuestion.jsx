@@ -1,13 +1,17 @@
+import MenuNavigate from '../components/MenuNavigate'
+import { BaseUrl } from '../configurations/config';
+import { getToken } from '../services/localStorageService';
 import axios from "axios";
 import { useState, useMemo, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ToastContainer, toast } from "react-toastify";
-import { BaseUrl } from "../configurations/config";
-import { getToken } from "../services/localStorageService";
 import { useNavigate } from "react-router-dom";
 
-export default function AskQuestionForm() {
+export default function EditQuestion() {
+  const token = getToken();
+  const questionId = window.location.pathname.split('/')[3]
+  const [question, setQuestion] = useState({});
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
@@ -18,7 +22,6 @@ export default function AskQuestionForm() {
   const [imageExpectingList, setImageExpectingList] = useState([]);
   const quillRef = useRef(null); 
   const quillRefExpecting = useRef(null);
-  const token = getToken();
   const quillModules = useMemo(
     () => ({
       toolbar: [
@@ -30,6 +33,23 @@ export default function AskQuestionForm() {
     }),
     []
   );
+  useEffect(() => {
+    axios
+      .get(`${BaseUrl.uri}/question/${questionId}`,{headers: {
+        Authorization: `Bearer ${token}`
+      }})
+      .then((res) => {
+        const question = res.data.data;
+        setQuestion(res.data.data);
+        setTitle(question.title);
+        setDetails(question.detailProblem);
+        setExpectedResult(question.expecting);
+        let questionTags = question.questionTags.map((tag) => tag.tagName);
+        setTags(questionTags);
+      })
+  },[]);
+
+
   const getImagesFromHTML = (html) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
@@ -172,7 +192,7 @@ export default function AskQuestionForm() {
       return;
     }
 
-    axios.post(`${BaseUrl.uri}/question`,
+    axios.put(`${BaseUrl.uri}/question/${questionId}`,
         {
           title: title,
           detailProblem: details,
@@ -184,9 +204,9 @@ export default function AskQuestionForm() {
         Authorization: `Bearer ${token}`,
       },
     }).then((response) => {
-      if(response.status === 201){
-        toast("Question submitted successfully", { type: "success" });  
-        navigate("/questions")
+      if(response.status === 200){
+        toast("Update question successfully", { type: "success" });  
+        navigate("/questions/detail/" + questionId);
       } else {
         toast("Failed to submit question", { type: "error" });
       }
@@ -210,18 +230,15 @@ export default function AskQuestionForm() {
     setExpectedResult(content);
 
   }
+
   return (
-    <div className="max-w-4xl mx-auto  bg-white p-8">
+    <>
+      <MenuNavigate />
+      <div className="max-w-4xl mx-auto  bg-white p-8">
       <h2 className="text-2xl font-bold mb-4 flex items-center">
-        <span className="mr-2">📚</span> Ask a question in Staging Ground
+        <span className="mr-2">📚</span> Edit question
       </h2>
-      <p className="text-gray-600 mb-4">
-        A private space to help new users write their first questions.
-        <a href="#" className="text-blue-500">
-          {" "}
-          Learn more.
-        </a>
-      </p>
+      
 
       <div className="mb-4">
         <label className="block text-gray-700 font-semibold mb-1">Title</label>
@@ -317,7 +334,7 @@ export default function AskQuestionForm() {
         onClick={handleSubmitQuestion}
         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 mt-4"
       >
-        Submit for eveluation
+        Update question
         <ToastContainer
           position="bottom-left"
           autoClose={5000}
@@ -332,5 +349,6 @@ export default function AskQuestionForm() {
         />
       </button>
     </div>
-  );
+    </>
+  )
 }
