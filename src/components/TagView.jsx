@@ -8,7 +8,7 @@ export default function TagView({tagName, numberOfQuestions, askedThisWeek}) {
         <div onClick={() => navigate(`/questions/tagged/${tagName}`)} className='bg-gray-200 hover:bg-gray-300 p-1 rounded-md w-fit cursor-pointer'>
           <h6 className=' font-medium'>{tagName}</h6>
         </div>
-        <div className='flex justify-between items-center gap-2 mt-8'>
+        <div className='flex justify-between items-center gap-1 mt-7'>
           <div className='text-gray-500'>{numberOfQuestions} questions</div>
           <div className='text-gray-500' >{askedThisWeek} asked this week</div>
         </div>      

@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import axios from 'axios';
 import { BaseUrl } from '../configurations/config';
 
-export default function TagInput({setTags}) {
+export default function TagInput({setTags, currentPage, setTotalPages, perPage}) {
 
   const [keyword, setKeyword] = useState('');
 
@@ -22,11 +22,12 @@ export default function TagInput({setTags}) {
   useEffect(() => {
     // Fetch tags from API
     axios
-      .get(`${BaseUrl.uri}/tag?keyword=${keyword}`)
+      .get(`${BaseUrl.uri}/tag?keyword=${keyword}&pageIndex=${currentPage}`)
       .then((res) => {
-        setTags(res.data.data);
+        setTags(res.data.data.tags);
+        setTotalPages(res.data.data.totalPage);
       })
-  }, [keyword]);
+  }, [keyword, currentPage, perPage]);
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
