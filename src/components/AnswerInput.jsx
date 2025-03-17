@@ -148,7 +148,7 @@ export default function AnswerInput({setNewAnswer, questionId}) {
               pauseOnHover
               theme="light"
             />
-      <div className="max-w-5xl mx-auto bg-white p-5">
+      <div className="max-w-4xl mx-auto bg-white p-5">
         <div className="mb-5">
           <h2 className="text-2xl font-normal">Your Answer</h2>
           <p className="text-gray-600">
