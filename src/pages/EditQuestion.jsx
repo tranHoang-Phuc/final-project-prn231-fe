@@ -46,6 +46,8 @@ export default function EditQuestion() {
         setExpectedResult(question.expecting);
         let questionTags = question.questionTags.map((tag) => tag.tagName);
         setTags(questionTags);
+      }).catch(() => {
+        navigate('/question/detail/' + questionId);
       })
   },[]);
 

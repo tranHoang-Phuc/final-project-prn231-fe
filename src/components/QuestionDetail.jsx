@@ -22,6 +22,7 @@ export default function QuestionDetail({
   createdUser,
   answers,
 }) {
+  const [showPopup, setShowPopup] = useState(false);
   const [newAnswer, setNewAnswer] = useState(null);
   const isBelong = isBelongTo(createdUser.id);
   const token = getToken();
@@ -69,6 +70,7 @@ export default function QuestionDetail({
     
   };
 
+
   const navigate = useNavigate();
   useEffect(() => {
     document.querySelectorAll(".ql-syntax").forEach((el) => {
@@ -86,6 +88,20 @@ export default function QuestionDetail({
       a.classList.add("text-blue-600", "underline", "hover:text-blue-800");
     });
   }, []);
+  const handleDelete = () => {
+    axios
+      .delete(`${BaseUrl.uri}/question/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })  
+      .then(() => {
+        toast.success("Question deleted successfully");
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error("Failed to delete question");
+      });
+    setShowPopup(false);
+  };
   return (
     <>
     <ToastContainer
@@ -100,21 +116,36 @@ export default function QuestionDetail({
           pauseOnHover
           theme="light"
         />
-      <div className="max-w-5xl mx-auto my-5 border-b border-gray-300  bg-white p-5">
+      <div className="max-w-4xl mx-auto my-5 border-b border-gray-300  bg-white p-5">
         <div className="flex justify-between items-center">
           <div className="text-2xl w-3/5 text-wrap">{title}</div>
           <div className="flex w-2/5 justify-end">
             {isBelong === true ? (
-              <button
+              <div>
+                <button
                 onClick={() => navigate(`/question/edit/${id}`)}
                 className="bg-white
                  text-black px-4 py-2 
-                 border rounded-md hover:bg-blue-600 mr-3
+                 border rounded-md hover:bg-blue-600 
                   border-blue-300 hover:text-white
                   hover:opacity-90"
               >
                 Edit
               </button>
+              <button
+              onClick={() => setShowPopup(true)}
+              className="bg-red-500
+                px-4 py-2 
+               text-white
+               border rounded-md hover:bg-red-600 mr-3
+                border-red-300 hover:text-white
+                hover:opacity-90 ml-3"
+            >
+              Delete
+            </button>
+              </div>
+              
+              
             ) : null}
             <button
               onClick={() => navigate("/question/ask")}
@@ -123,6 +154,7 @@ export default function QuestionDetail({
               Ask Question
             </button>
           </div>
+          
         </div>
         <div>
           <ul className="flex gap-4 mt-4">
@@ -140,7 +172,7 @@ export default function QuestionDetail({
           </ul>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto border-b border-gray-300 bg-white p-5">
+      <div className="max-w-4xl mx-auto border-b border-gray-300 bg-white p-5">
         <div className="flex">
           <div>
             <ul>
@@ -200,7 +232,7 @@ export default function QuestionDetail({
           </div>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto  bg-white p-5">
+      <div className="max-w-4xl mx-auto  bg-white p-5">
         <h2 className="text-2xl font-normal ">{answers.length} Answers</h2>
       </div>
       {answers.map((answer) => (
@@ -234,6 +266,28 @@ export default function QuestionDetail({
         setNewAnswer={setNewAnswer}
         questionId={id}
       />
+
+{showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p className="text-lg font-medium">Do you want to delete this question?</p>
+            <div className="mt-4 flex justify-center gap-4">
+              <button
+                onClick={handleDelete}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

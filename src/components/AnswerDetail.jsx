@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { BaseUrl } from "../configurations/config";
 import axios from "axios";
 import { getToken } from "../services/localStorageService";
+import { isBelongTo } from "../services/inbound";
 
 export default function AnswerDetail({
   id,
@@ -19,6 +20,9 @@ export default function AnswerDetail({
   const token = getToken();
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(isApproved);
+  const [isEditing, setIsEditing] = useState(false);
+  const isBelong = isBelongTo(createdUser.id);
+  const [newContent, setNewContent] = useState(content);
   useEffect(() => {
     document.querySelectorAll(".ql-syntax").forEach((el) => {
       el.classList.add(
@@ -61,14 +65,31 @@ export default function AnswerDetail({
       });
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+
+  }
   return (
     <>
-      <div className="max-w-5xl mx-auto border-b border-gray-300 bg-white p-5">
+      <div className="max-w-4xl mx-auto border-b border-gray-300 bg-white p-5">
         {!  isAccepted && (
           <button 
           onClick={() => acceptAnswer(id)}
-          className='text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl'
+          className='text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl mr-3'
           >Accept</button>
+        )}
+        {isBelong && (
+          <div>
+            <button
+            className="text-blue-500 border border-blue-500 bg-red-white p-2 mb-2 rounded-xl mr-3"
+            onClick={handleEdit}>
+            
+            Edit
+          </button>
+          <button className="text-white border border-red-500 bg-red-500 p-2 mb-2 rounded-xl">
+            Delete
+          </button>
+          </div>
         )}
         <div className="flex">
           <div>
@@ -76,7 +97,7 @@ export default function AnswerDetail({
               <li>
                 <button className="border border-gray-300 rounded-full px-2 py-2 hover:bg-gray-100">
                   <ArrowUp size={24} 
-                    onClick={(answerId) => handleVote(answerId, "up")}  
+                    onClick={() => handleVote(id, "up")}  
                     className="text-gray-700 " />
                 </button>
               </li>
@@ -85,7 +106,7 @@ export default function AnswerDetail({
                 <button className="border border-gray-300 rounded-full px-2 py-2 hover:bg-gray-100">
                   <ArrowUp
                     size={24}
-                    onClick={(answerId) => handleVote(answerId, "down")}
+                    onClick={() => handleVote(id, "down")}
                     className="text-gray-700 transform rotate-180"
                   />
                 </button>
