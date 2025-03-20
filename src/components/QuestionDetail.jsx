@@ -199,8 +199,8 @@ export default function QuestionDetail({
               </li>
             </ul>
           </div>
-          <div>
-            <div className="ml-5 question-content">
+          <div className="w-full">
+            <div className="ml-5 question-content w-fit">
               <div dangerouslySetInnerHTML={{ __html: problem }}></div>
               <div dangerouslySetInnerHTML={{ __html: expect }}></div>
             </div>

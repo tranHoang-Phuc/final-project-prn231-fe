@@ -125,7 +125,6 @@ export default function AnswerDetail({
               <div dangerouslySetInnerHTML={{ __html: content }}></div>
             </div>
             <div className="flex justify-between items-center mt-1">
-              <div className="ml-5"></div>
               <div className=" mr-4 mt-4 flex justify-between items-center">
                 <div className="flex gap-2">
                   <span className="text-gray-600">Created:</span> {createdAt}
