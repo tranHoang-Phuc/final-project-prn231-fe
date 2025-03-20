@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getToken } from "../services/localStorageService";
+import { getToken, getUser } from "../services/localStorageService";
 import axios from "axios";
 import { BaseUrl } from "../configurations/config";
 
@@ -13,8 +13,7 @@ export default function Header() {
   const isLogin = location.pathname === "/login";
   const accessToken = getToken();
 
-  
-
+  const user = getUser();
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -75,6 +74,15 @@ export default function Header() {
                 >
                   Login
                 </button>
+              )}
+
+              { accessToken && (
+                <img
+                  src={user.profileImage}
+                  alt="avatar"
+                  className="w-8 h-8 rounded-full ml-3 cursor-pointer"
+                  onClick={() => navigate("/profile")}
+                />
               )}
             </div>
           </div>

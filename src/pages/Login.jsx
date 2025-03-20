@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { OauthConfig, BaseUrl } from "../configurations/config";
 import {useNavigate} from "react-router-dom";
-import { getToken } from "../services/localStorageService";
+import { getToken, removeUser } from "../services/localStorageService";
 import axios from "axios";
 
 export default function Login() {
@@ -24,11 +24,14 @@ export default function Login() {
           }
       }).then((response) => {
         if(!response.data.data.isValid) {
+          removeUser();
           navigate("/login");
         } else {
           navigate("/");
         }
       }).catch((error) => {
+        removeUser();
+        
       });
       }
       
