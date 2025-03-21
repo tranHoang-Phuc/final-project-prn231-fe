@@ -5,7 +5,7 @@ export const OauthConfig = {
 }
 
 export const BaseUrl = {
-  uri: "https://36.50.135.8/api"
-  //uri: "http://localhost:5100/api"
+  //uri: "https://36.50.135.8/api"
+  uri: "http://localhost:5100/api"
 
 }
