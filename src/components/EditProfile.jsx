@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
-import { getToken } from "../services/localStorageService";
+import { getToken, setUser } from "../services/localStorageService";
 import { BaseUrl } from "../configurations/config";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -134,6 +134,7 @@ export default function EditProfile({ user }) {
         }
       );
       if (response.data && response.data.data) {
+        setUser(response.data.data);
         toast.success("Update succesfully", {
           position: "bottom-left",successClassName: "toast-success",
           autoClose: 5000,
