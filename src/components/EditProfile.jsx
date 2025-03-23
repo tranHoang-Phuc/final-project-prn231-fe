@@ -194,7 +194,7 @@ export default function EditProfile({ user, isOwner }) {
                 position: "bottom-left",successClassName: "toast-success",
                 autoClose: 5000,
               });
-              
+              setIsPopupOpen(false);
             }
           });
       } catch (error) {

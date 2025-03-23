@@ -4,10 +4,11 @@ import { getToken, getUser } from "../services/localStorageService";
 import axios from "axios";
 import { BaseUrl } from "../configurations/config";
 import { DataContext } from "./DataProvider";
-
+import { Bell } from "lucide-react";
+import SSEClient from "../hooks/SSEClient";
 export default function Header() {
-
-  const { sharedData, setSharedData , setSearchString} = useContext(DataContext);
+  const { sharedData, setSharedData, setSearchString } =
+    useContext(DataContext);
 
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
@@ -15,7 +16,7 @@ export default function Header() {
   const location = useLocation();
   const isLogin = location.pathname === "/login";
   const accessToken = getToken();
-
+  const {notiStatus, setNotiStatus} = useState(false);
   const user = getUser();
   useEffect(() => {
     function handleClickOutside(event) {
@@ -29,6 +30,7 @@ export default function Header() {
 
   const handleSearch = (searchString) => {
     setSearchString(searchString);
+    console.log(searchString);
     axios
       .get(`${BaseUrl.uri}/question?search=${searchString}&pageSize=15`, {
         headers: {
@@ -37,11 +39,18 @@ export default function Header() {
       })
       .then((response) => {
         setSharedData(response.data.data);
-      })
+        console.log(response.data.data);
+      });
+  };
+
+  const handleNotification = async () => {
+    setNotiStatus(false);
   }
 
   return (
     <div className="bg-white border-b shadow-sm sticky top-0 z-50">
+          {/* <SSEClient setNotiStatus={setNotiStatus} /> */}
+
       <header className="flex justify-center py-[10px] relative">
         <div className="mr-7">
           <img
@@ -73,8 +82,7 @@ export default function Header() {
                 onFocus={() => setShowPopup(true)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
-                    handleSearch(event.target
-                      .value);
+                    handleSearch(event.target.value);
                   }
                 }}
               />
@@ -88,13 +96,25 @@ export default function Header() {
                 </button>
               )}
 
-              { accessToken && (
-                <img
-                  src={user.profileImage}
-                  alt="avatar"
-                  className="w-8 h-8 rounded-full ml-3 cursor-pointer"
-                  onClick={() => navigate("/profile")}
-                />
+              {accessToken && (
+                <div className="flex items-center">
+                  <img
+                    src={user.profileImage}
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full ml-3 cursor-pointer"
+                    onClick={() => navigate("/profile")}
+                  />
+                  <Bell
+                    size={40}
+                    className="ml-3 cursor-pointer"
+                    onClick={handleNotification}
+                  />
+                  {notiStatus && (
+                    <span className="absolute top-1 right-4 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {""}
+                  </span>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -135,7 +155,10 @@ export default function Header() {
               </div>
 
               <div className="flex justify-between items-center mt-3 border-t pt-3">
-                <button onClick={() => navigate("/question/ask")} className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
+                <button
+                  onClick={() => navigate("/question/ask")}
+                  className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                >
                   Ask question
                 </button>
                 <a href="#" className="text-blue-500 text-sm hover:underline">

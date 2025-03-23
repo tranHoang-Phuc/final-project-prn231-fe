@@ -249,6 +249,7 @@ export default function QuestionDetail({
           updatedAt={converDate(answer.updatedAt)}
           votes={answer.answerVotes}
           createdUser={answer.createdUser}
+          author={createdUser.id}
         />
       ))}
       {newAnswer && (
@@ -262,6 +263,7 @@ export default function QuestionDetail({
           updatedAt={converDate(newAnswer.updatedAt)}
           votes={newAnswer.answerVotes}
           createdUser={newAnswer.createdUser}
+          author={createdUser.id}
         />
       )}
 
