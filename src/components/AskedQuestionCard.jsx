@@ -26,7 +26,7 @@ export default function AskedQuestionCard({ question }) {
       </div>
       <div>
         {/* <h2 className=' font-normal mt-2'>{question.title}</h2> */}
-        <h2 className="text-xl font-normal mt-2 text-blue-500 hover:text-blue-800"
+        <h2 className="text-xl font-normal mt-2 text-blue-500 hover:text-blue-800 cursor-pointer"
         
         onClick={() => navigate(`/questions/detail/${question.id}`)}>
           {question.title}

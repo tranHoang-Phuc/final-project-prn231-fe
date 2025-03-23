@@ -1,15 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getToken, getUser } from "../services/localStorageService";
 import axios from "axios";
 import { BaseUrl } from "../configurations/config";
+import { DataContext } from "./DataProvider";
 
 export default function Header() {
+
+  const { sharedData, setSharedData , setSearchString} = useContext(DataContext);
+
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const searchRef = useRef(null);
   const location = useLocation();
-
   const isLogin = location.pathname === "/login";
   const accessToken = getToken();
 
@@ -25,7 +28,16 @@ export default function Header() {
   }, []);
 
   const handleSearch = (searchString) => {
-
+    setSearchString(searchString);
+    axios
+      .get(`${BaseUrl.uri}/question?search=${searchString}&pageSize=15`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setSharedData(response.data.data);
+      })
   }
 
   return (

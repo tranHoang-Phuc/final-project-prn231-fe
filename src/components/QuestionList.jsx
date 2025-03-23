@@ -5,19 +5,21 @@ import Pagination from "./Pagination";
 import axios from "axios";
 import { BaseUrl } from "../configurations/config";
 import { getToken } from "../services/localStorageService";
-export default function QuestionList({tagName}) {
+export default function QuestionList({tagName, questionsList, searchString}) {
   const token = getToken();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Newest");
   const [showFilter, setShowFilter] = useState(false); // Quản lý hiển thị bộ lọc
   const [currentPage, setCurrentPage] = useState(1);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState(() => questionsList?.questions ?? []);
+  const [totalPages, setTotalPages] = useState(() => questionsList?.total ? Math.ceil(questionsList.total / 15) : 0);
+  const [numOfQuestions, setNumOfQuestions] = useState(() => questionsList?.total ?? 0);
   const [filterBy, setFilterBy] = useState([]);
   const [sortedBy, setSortedBy] = useState("Newest");
   const [taggedWith, setTaggedWith] = useState([]);
   const [perPage, setPerPage] = useState(15);
-  const [totalPages, setTotalPages] = useState(0);
-  const [numOfQuestions, setNumOfQuestions] = useState(0);
+  const [search, setSearch] = useState(searchString?searchString:null);
+  
   const toggleFilter = (value) => {
     setFilterBy((prev) =>
       prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
@@ -41,11 +43,15 @@ export default function QuestionList({tagName}) {
   
     setQuestions(sortedQuestions);
   }, [activeTab]);
-  
-
   useEffect(() => {
-    
-    const tags = tagName ? [tagName].join(",") : null;
+    setQuestions(questionsList?.questions || []);
+    const total = questionsList?.total || 0;
+    setTotalPages(total > 0 ? Math.ceil(total / 15) : 0);   
+    setNumOfQuestions(questionsList?.total || 0);
+  }, [questionsList]);
+  useEffect(() => { 
+    if(questionsList === undefined || questionsList === null){
+      const tags = tagName ? [tagName].join(",") : null;
     axios.get(`${BaseUrl.uri}/question`, {
       params: {
           pageSize: perPage,
@@ -53,7 +59,7 @@ export default function QuestionList({tagName}) {
           filter: null,
           order: null,
           tags: tags,  
-          search: null,
+          search: search,
       },
       headers:{Authorization: `Bearer ${token}`},
   })
@@ -63,7 +69,10 @@ export default function QuestionList({tagName}) {
       setNumOfQuestions(response.data.data.total);
       setQuestions(questionListSorted);
   })
+    }
   }, [currentPage, tagName, perPage]);
+
+ 
   return (
     <>
       <div className="border-b border-gray-300 rounded-lg max-w-4xl mx-auto bg-white p-5">
@@ -97,13 +106,7 @@ export default function QuestionList({tagName}) {
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => setShowFilter(!showFilter)}
-              className="ml-3 px-3 py-1 border rounded-md flex items-center space-x-1 text-sm text-blue-600 hover:bg-blue-50"
-            >
-              <span>☰</span>
-              <span>Filter</span>
-            </button>
+            
           </div>
         </div>
 

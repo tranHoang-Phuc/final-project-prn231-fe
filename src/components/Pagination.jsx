@@ -57,7 +57,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange, perPage, onPerPageC
         </button>
       </div>
 
-      <div className="flex items-center space-x-2">
+      {/* <div className="flex items-center space-x-2">
         {[15, 30, 50].map((size) => (
           <button
             key={size}
@@ -70,7 +70,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange, perPage, onPerPageC
           </button>
         ))}
         <span className="text-gray-500">per page</span>
-      </div>
+      </div> */}
     </div>
   );
 };
