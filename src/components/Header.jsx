@@ -96,7 +96,7 @@ export default function Header() {
                 </button>
               )}
 
-              {accessToken && (
+              {accessToken && user && (
                 <div className="flex items-center">
                   <img
                     src={user.profileImage}
@@ -104,7 +104,7 @@ export default function Header() {
                     className="w-8 h-8 rounded-full ml-3 cursor-pointer"
                     onClick={() => navigate("/profile")}
                   />
-                  <Bell
+                  {/* <Bell
                     size={40}
                     className="ml-3 cursor-pointer"
                     onClick={handleNotification}
@@ -113,7 +113,7 @@ export default function Header() {
                     <span className="absolute top-1 right-4 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {""}
                   </span>
-                  )}
+                  )} */}
                 </div>
               )}
             </div>
