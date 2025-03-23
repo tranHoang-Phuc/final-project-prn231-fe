@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BaseUrl } from "../configurations/config";
 import axios from "axios";
-import { getToken } from "../services/localStorageService";
+import { getToken, getUser } from "../services/localStorageService";
 import { isBelongTo, isOwner } from "../services/inbound";
 
 export default function AnswerDetail({
@@ -16,6 +16,7 @@ export default function AnswerDetail({
   createdAt,
   updatedAt,
   votes,
+  author
 }) {
   const token = getToken();
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ export default function AnswerDetail({
   return (
     <>
       <div className="max-w-4xl mx-auto border-b border-gray-300 bg-white p-5">
-        {(!isAccepted &&  isOwner(createdUser.id)) && (
+        { !isAccepted && getUser().id === author && (
           <button
             onClick={() => acceptAnswer(id)}
             className="text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl mr-3"
@@ -128,7 +129,7 @@ export default function AnswerDetail({
               )}
             </ul>
           </div>
-          <div>
+          <div className="w-full">
             <div className="ml-5 question-content">
               <div dangerouslySetInnerHTML={{ __html: content }}></div>
             </div>
