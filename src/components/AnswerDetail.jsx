@@ -137,7 +137,7 @@ export default function AnswerDetail({
           </div>
           <div className="w-full">
             <div className="ml-5 question-content">
-              <div dangerouslySetInnerHTML={{ __html: content }}></div>
+              <div className="w-full break-words whitespace-normal overflow-hidden" dangerouslySetInnerHTML={{ __html: content }}></div>
             </div>
             <div className="flex justify-between items-center mt-1">
               <div className=" mr-4 mt-4 flex justify-between items-center">
