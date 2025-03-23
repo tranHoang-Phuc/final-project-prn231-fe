@@ -4,10 +4,11 @@ import EditProfile from "./EditProfile";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ToastContainer, toast } from "react-toastify";
+import Activities from "./ActivityProfile";
+import ActivityProfile from "./ActivityProfile";
 
-export default function ProfileDisplay({ user }) {
+export default function ProfileDisplay( {user, isOwner}) {
   const [tab, setTab] = useState("Settings");
-  const [aboutMe, setAboutMe] = useState(user.aboutMe);
   const [imageList, setImageList] = useState([]);
   const quillFormats = useMemo(
       () => [
@@ -58,7 +59,10 @@ export default function ProfileDisplay({ user }) {
         </ul>
       </div>
       {tab === "Settings" && (
-        <EditProfile user={user} />
+        <EditProfile user={user} isOwner={isOwner} />
+      )}
+      {tab  === "Activity" && (
+        <ActivityProfile />
       )}
     </div>
   );

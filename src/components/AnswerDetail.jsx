@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { BaseUrl } from "../configurations/config";
 import axios from "axios";
 import { getToken } from "../services/localStorageService";
-import { isBelongTo } from "../services/inbound";
+import { isBelongTo, isOwner } from "../services/inbound";
 
 export default function AnswerDetail({
   id,
@@ -41,14 +41,16 @@ export default function AnswerDetail({
   }, []);
 
   const handleVote = (answerId, vote) => {
-    axios.post(`${BaseUrl.uri}/answer/${answerId}/${vote}`, 
-      {headers:{Authorization: `Bearer ${token}`}}
-    ).then((response) => {
-      let element = document.getElementById(answerId); 
-      let currentValue = parseInt(element.innerText, 10) || 0
-      element.innerText = currentValue + 1;  
-     });
-  }
+    axios
+      .post(`${BaseUrl.uri}/answer/${answerId}/${vote}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        let element = document.getElementById(answerId);
+        let currentValue = parseInt(element.innerText, 10) || 0;
+        element.innerText = currentValue + 1;
+      });
+  };
 
   const acceptAnswer = (answerId) => {
     axios
@@ -60,35 +62,37 @@ export default function AnswerDetail({
             Authorization: `Bearer ${token}`,
           },
         }
-      ).then((response) => {
+      )
+      .then((response) => {
         setIsAccepted(true);
       });
   };
 
   const handleEdit = () => {
     setIsEditing(true);
-
-  }
+  };
   return (
     <>
       <div className="max-w-4xl mx-auto border-b border-gray-300 bg-white p-5">
-        {!  isAccepted && (
-          <button 
-          onClick={() => acceptAnswer(id)}
-          className='text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl mr-3'
-          >Accept</button>
+        {(!isAccepted &&  isOwner(createdUser.id)) && (
+          <button
+            onClick={() => acceptAnswer(id)}
+            className="text-white border border-blue-500 bg-blue-500 p-2 mb-2 rounded-xl mr-3"
+          >
+            Accept
+          </button>
         )}
         {isBelong && (
           <div>
             <button
-            className="text-blue-500 border border-blue-500 bg-red-white p-2 mb-2 rounded-xl mr-3"
-            onClick={handleEdit}>
-            
-            Edit
-          </button>
-          <button className="text-white border border-red-500 bg-red-500 p-2 mb-2 rounded-xl">
-            Delete
-          </button>
+              className="text-blue-500 border border-blue-500 bg-red-white p-2 mb-2 rounded-xl mr-3"
+              onClick={handleEdit}
+            >
+              Edit
+            </button>
+            <button className="text-white border border-red-500 bg-red-500 p-2 mb-2 rounded-xl">
+              Delete
+            </button>
           </div>
         )}
         <div className="flex">
@@ -96,12 +100,16 @@ export default function AnswerDetail({
             <ul>
               <li>
                 <button className="border border-gray-300 rounded-full px-2 py-2 hover:bg-gray-100">
-                  <ArrowUp size={24} 
-                    onClick={() => handleVote(id, "up")}  
-                    className="text-gray-700 " />
+                  <ArrowUp
+                    size={24}
+                    onClick={() => handleVote(id, "up")}
+                    className="text-gray-700 "
+                  />
                 </button>
               </li>
-              <li id={id} className="text-black text-3xl px-3 py-2">{votes.length}</li>
+              <li id={id} className="text-black text-3xl px-3 py-2">
+                {votes.length}
+              </li>
               <li>
                 <button className="border border-gray-300 rounded-full px-2 py-2 hover:bg-gray-100">
                   <ArrowUp
@@ -137,7 +145,15 @@ export default function AnswerDetail({
                     alt="avatar"
                     className="w-6 h-6 rounded-full"
                   />
-                  <span span className="ml-2 text-blue-600 text-thin">
+                  <span
+                    span
+                    className="ml-2 text-blue-600 text-thin cursor-pointer"
+                    onClick={
+                      isOwner(createdUser.id)
+                        ? () => navigate("/profile")
+                        : () => navigate(`/profile/${createdUser.aliasName}`)
+                    }
+                  >
                     {createdUser.displayName}
                   </span>
                 </div>

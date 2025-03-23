@@ -10,6 +10,7 @@ import Tags from './pages/Tags';
 import Question from './pages/Question';
 import EditQuestion from './pages/EditQuestion';
 import Profile from './pages/Profile';
+import Users from './pages/Users';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path='/questions/detail/:id' element={<Question/>} />
         <Route path='/question/edit/:id' element={<EditQuestion/>} />
         <Route path='/profile/:alias?' element={<Profile/>} />
+        <Route path='/users' element={<Users/>} />
       </Routes>
     </Router>
   );

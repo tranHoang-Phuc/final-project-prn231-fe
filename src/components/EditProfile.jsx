@@ -6,19 +6,23 @@ import axios from "axios";
 import { getToken, setUser } from "../services/localStorageService";
 import { BaseUrl } from "../configurations/config";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-export default function EditProfile({ user }) {
+export default function EditProfile({ user, isOwner }) {
+  const navigate = useNavigate();
   const token = getToken();
   const quillRef = useRef(null);
   const [imageList, setImageList] = useState([]);
   const [statusEditor, setStatusEditor] = useState(true);
-  const [details, setDetails] = useState(user.aboutMe);
-  const [displayName, setDisplayName] = useState(user.displayName);
-  const [location, setLocation] = useState(user.location);
-  const [title, setTitle] = useState(user.title);
+  const [details, setDetails] = useState(user.aboutMe || "");
+  const [displayName, setDisplayName] = useState(user.displayName || "");
+  const [location, setLocation] = useState(user.location || "");
+  const [title, setTitle] = useState(user.title || "");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
+
+
   const getImagesFromHTML = (html) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
@@ -185,12 +189,12 @@ export default function EditProfile({ user }) {
           })
           .then((response) => {
             if (response.data && response.data.data) {
-              console.log(response.data.data);
-              // setUser(response.data.data);
-              // toast.success("Update succesfully", {
-              //   position: "bottom-left",successClassName: "toast-success",
-              //   autoClose: 5000,
-              // });
+              setUser(response.data.data);
+              toast.success("Update succesfully", {
+                position: "bottom-left",successClassName: "toast-success",
+                autoClose: 5000,
+              });
+              
             }
           });
       } catch (error) {
@@ -207,23 +211,27 @@ export default function EditProfile({ user }) {
       <h2 className="text-xl font-semibold mb-4">Public information</h2>
 
       {/* Profile Image */}
-      <div className="mb-4">
-        <p className="font-medium">Profile image</p>
-        <div className="flex flex-col items-center mt-2">
-          <img
-            src={user.profileImage} // Thay ảnh profile tại đây
-            alt="Profile"
-            className="w-24 h-24 rounded-lg border border-gray-300"
-          />
-          <input type="file" className="mt-2" hidden="true" id="imageProfile" />
-          <button
-            className="mt-2 bg-gray-700 text-white px-3 py-1 text-sm rounded-md hover:bg-gray-800"
-            onClick={() => setIsPopupOpen(true)}
-          >
-            Change picture
-          </button>
-        </div>
-      </div>
+      {isOwner && (
+
+<div className="mb-4">
+<p className="font-medium">Profile image</p>
+<div className="flex flex-col items-center mt-2">
+  <img
+    src={user.profileImage} // Thay ảnh profile tại đây
+    alt="Profile"
+    className="w-24 h-24 rounded-lg border border-gray-300"
+  />
+  <input type="file" className="mt-2" hidden="true" id="imageProfile" />
+  <button
+    className="mt-2 bg-gray-700 text-white px-3 py-1 text-sm rounded-md hover:bg-gray-800"
+    onClick={() => setIsPopupOpen(true)}
+    {...(isOwner ? {} : { hidden: true })}
+    >
+    Change picture
+  </button>
+</div>
+</div>
+      )}
       {isPopupOpen && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-md shadow-md w-96">
@@ -233,12 +241,14 @@ export default function EditProfile({ user }) {
               <button
                 className="mr-2 px-3 py-1 bg-blue-500 text-white rounded-md"
                 onClick={handleImageSaveChange}
+                {...(isOwner ? {} : { disabled: true })}
               >
                 Change
               </button>
               <button
                 className="mr-2 px-3 py-1 bg-gray-500 text-white rounded-md"
                 onClick={() => setIsPopupOpen(false)}
+                {...(isOwner ? {} : { disabled: true })}
               >
                 Cancel
               </button>
@@ -251,8 +261,9 @@ export default function EditProfile({ user }) {
         <input
           type="text"
           className="w-3/5 border border-gray-500 rounded-md p-2 mt-1  "
-          value={user.displayName} // Thay tên hiển thị tại đây
+          value={displayName} // Thay tên hiển thị tại đây
           onChange={(e) => setDisplayName(e.target.value)}
+          {...(isOwner ? {} : { disabled: true })}
         />
       </div>
 
@@ -262,8 +273,9 @@ export default function EditProfile({ user }) {
         <input
           type="text"
           className="w-3/5 border-gray-500 border rounded-md p-2 mt-1 "
-          value={user.location} // Thay địa chỉ tại đây
+          value={location} // Thay địa chỉ tại đây
           onChange={(e) => setLocation(e.target.value)}
+          {...(isOwner ? {} : { disabled: true })}
         />
       </div>
 
@@ -273,9 +285,10 @@ export default function EditProfile({ user }) {
         <input
           type="text"
           className="w-3/5  border border-gray-500 rounded-md p-2 mt-1 "
-          value={user.title}
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="No title has been set"
+          {...(isOwner ? {} : { disabled: true })}
         />
       </div>
 
@@ -290,11 +303,13 @@ export default function EditProfile({ user }) {
           onChange={handleChange}
           modules={quillModules}
           formats={quillFormats}
-          className="bg-white p-2 h-64"
-        />
+          className={!isOwner ? "bg-white p-2 h-64 mb-10" : "bg-white p-2 h-64"}
+          readOnly={!isOwner} 
+          />
         <button
           className="bg-blue-500 text-white px-3 py-1 text-sm rounded-md hover:opacity-90 mt-12"
           onClick={handleSaveProfile}
+          {...(isOwner ? {} : { hidden: true })}
         >
           Save profile
         </button>

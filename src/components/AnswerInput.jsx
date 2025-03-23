@@ -6,6 +6,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { BaseUrl } from "../configurations/config";
 import { getToken } from "../services/localStorageService";
+import { useNavigate } from "react-router-dom";
 
 
 export default function AnswerInput({setNewAnswer, questionId}) {
@@ -14,6 +15,7 @@ export default function AnswerInput({setNewAnswer, questionId}) {
   const [details, setDetails] = useState("");
   const [imageList, setImageList] = useState([]);
   const [statusEditor, setStatusEditor] = useState(true);
+  const navigate = useNavigate()
   
   const getImagesFromHTML = (html) => {
     const tempDiv = document.createElement("div");
@@ -127,10 +129,10 @@ export default function AnswerInput({setNewAnswer, questionId}) {
       .then((response) => {
         setNewAnswer(response.data.data);
         setTimeout(() => setStatusEditor(false), 0);
-        setDetails("");
         toast("Your answer has been posted", {
           type: "success",
         });
+        navigate(`/questions/detail/${questionId}`);
       })
 
   };

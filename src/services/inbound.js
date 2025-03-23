@@ -1,4 +1,4 @@
-import { getToken } from "./localStorageService"
+import { getToken, getUser } from "./localStorageService"
 
 export const isBelongTo = (createdBy) => {
   const token = getToken();
@@ -7,4 +7,9 @@ export const isBelongTo = (createdBy) => {
   const payload = JSON.parse(atob(payloadBase64));
   const sub = payload.sub;
   return sub === createdBy;
+}
+
+export const isOwner = (createdBy) => {
+  const user = getUser();
+  return user.id === createdBy;
 }
