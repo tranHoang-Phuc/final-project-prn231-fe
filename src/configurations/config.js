@@ -1,6 +1,6 @@
 export const OauthConfig = {
   clientId : "17676827402-c6dm734lc9hgjrvcreh1edfuajulodhr.apps.googleusercontent.com",
-  redirectUri : "http://localhost:3000/authenticate",
+  redirectUri : "https://final-project-prn231-fe.vercel.app/authenticate",
   authUri: "https://accounts.google.com/o/oauth2/auth"
 }
 
