@@ -13,7 +13,8 @@ export default function Authenticate() {
     if (authenCode) {
       axios.post(`${BaseUrl.uri}/auth/login`, { token: authenCode })
         .then((response) => {
-          var introspectResponse = response.data;
+          if (response.status === 200) {
+            var introspectResponse = response.data;
           setToken(introspectResponse.data.accessToken);
           setIsLoggedin(true);
           axios
@@ -24,6 +25,8 @@ export default function Authenticate() {
           }).then((response) => {
             setUser(response.data.data);
           });
+            
+          }
         }
         ).catch((error) => {
         });
