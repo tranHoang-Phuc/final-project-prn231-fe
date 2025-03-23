@@ -8,7 +8,7 @@ import { BaseUrl } from "../configurations/config";
 import { getToken } from "../services/localStorageService";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import { isBelongTo } from "../services/inbound";
+import { isBelongTo, isOwner } from "../services/inbound";
 export default function QuestionDetail({
   id,
   title,
@@ -39,8 +39,7 @@ export default function QuestionDetail({
   };
 
   const voteQuestion = (questionId, mode) => {
-    
-      axios
+    axios
       .put(
         `${BaseUrl.uri}/question/${questionId}/${mode}`,
         {},
@@ -66,10 +65,7 @@ export default function QuestionDetail({
           });
         }
       });
-    
-    
   };
-
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -92,7 +88,7 @@ export default function QuestionDetail({
     axios
       .delete(`${BaseUrl.uri}/question/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
-      })  
+      })
       .then(() => {
         toast.success("Question deleted successfully");
         navigate("/");
@@ -104,18 +100,18 @@ export default function QuestionDetail({
   };
   return (
     <>
-    <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="max-w-4xl mx-auto my-5 border-b border-gray-300  bg-white p-5">
         <div className="flex justify-between items-center">
           <div className="text-2xl w-3/5 text-wrap">{title}</div>
@@ -123,29 +119,27 @@ export default function QuestionDetail({
             {isBelong === true ? (
               <div>
                 <button
-                onClick={() => navigate(`/question/edit/${id}`)}
-                className="bg-white
+                  onClick={() => navigate(`/question/edit/${id}`)}
+                  className="bg-white
                  text-black px-4 py-2 
                  border rounded-md hover:bg-blue-600 
                   border-blue-300 hover:text-white
                   hover:opacity-90"
-              >
-                Edit
-              </button>
-              <button
-              onClick={() => setShowPopup(true)}
-              className="bg-red-500
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => setShowPopup(true)}
+                  className="bg-red-500
                 px-4 py-2 
                text-white
                border rounded-md hover:bg-red-600 mr-3
                 border-red-300 hover:text-white
                 hover:opacity-90 ml-3"
-            >
-              Delete
-            </button>
+                >
+                  Delete
+                </button>
               </div>
-              
-              
             ) : null}
             <button
               onClick={() => navigate("/question/ask")}
@@ -154,7 +148,6 @@ export default function QuestionDetail({
               Ask Question
             </button>
           </div>
-          
         </div>
         <div>
           <ul className="flex gap-4 mt-4">
@@ -210,7 +203,9 @@ export default function QuestionDetail({
                   {tags.map((tag, index) => (
                     <li
                       key={index}
-                      onClick={() => navigate(`/questions/tagged/${tag.tagName}`)}
+                      onClick={() =>
+                        navigate(`/questions/tagged/${tag.tagName}`)
+                      }
                       className="bg-gray-200 px-3 py-1 rounded-md font-semibold cursor-pointer"
                     >
                       {tag.tagName}
@@ -224,7 +219,15 @@ export default function QuestionDetail({
                   alt="avatar"
                   className="w-6 h-6 rounded-full"
                 />
-                <span className="ml-2 text-blue-600 text-thin">
+                <span
+                  className="ml-2 text-blue-600 text-thin
+                cursor-pointer"
+                  onClick={
+                    isOwner(createdUser.id)
+                      ? () => navigate("/profile")
+                      : () => navigate(`/profile/${createdUser.aliasName}`)
+                  }
+                >
                   {createdUser.displayName}
                 </span>
               </div>
@@ -248,7 +251,7 @@ export default function QuestionDetail({
           createdUser={answer.createdUser}
         />
       ))}
-      {newAnswer &&(
+      {newAnswer && (
         <AnswerDetail
           key={newAnswer.id}
           id={newAnswer.id}
@@ -262,15 +265,14 @@ export default function QuestionDetail({
         />
       )}
 
-      <AnswerInput 
-        setNewAnswer={setNewAnswer}
-        questionId={id}
-      />
+      <AnswerInput setNewAnswer={setNewAnswer} questionId={id} />
 
-{showPopup && (
+      {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <p className="text-lg font-medium">Do you want to delete this question?</p>
+            <p className="text-lg font-medium">
+              Do you want to delete this question?
+            </p>
             <div className="mt-4 flex justify-center gap-4">
               <button
                 onClick={handleDelete}

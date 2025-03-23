@@ -1,6 +1,7 @@
 import React from "react";
 import { convert } from "html-to-text";
 import { useNavigate } from "react-router-dom";
+import { isOwner } from "../services/inbound";
 export default function Question({
   id,
   title,
@@ -12,7 +13,6 @@ export default function Question({
   questionVotes,
   answers,
 }) {
-
   const navigate = useNavigate();
   const timeConverter = (date) => {
     const formattedDate =
@@ -74,7 +74,9 @@ export default function Question({
                 alt="avatar"
                 className="w-6 h-6 rounded-full"
               />
-              <span className="ml-1 text-blue-600 text-thin">
+              <span className="ml-1 text-blue-600 text-thin cursor-pointer"
+              onClick={isOwner(createdUser.id) ? () => navigate("/profile") : () => navigate(`/profile/${createdUser.aliasName}`)}
+              >
                 {createdUser.displayName}
               </span>
             </div>
