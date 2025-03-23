@@ -6,10 +6,13 @@ import "react-quill/dist/quill.snow.css";
 import { ToastContainer, toast } from "react-toastify";
 import Activities from "./ActivityProfile";
 import ActivityProfile from "./ActivityProfile";
+import { removeToken, removeUser } from "../services/localStorageService";
+import { useNavigate } from "react-router";
 
 export default function ProfileDisplay( {user, isOwner}) {
   const [tab, setTab] = useState("Settings");
   const [imageList, setImageList] = useState([]);
+  const navigate = useNavigate();
   const quillFormats = useMemo(
       () => [
         "header",
@@ -56,6 +59,13 @@ export default function ProfileDisplay( {user, isOwner}) {
           >
             Settings
           </li>
+          <li className="px-3 py-1 cursor-pointer"
+            onClick={() => {
+              removeToken();
+              removeUser();
+              navigate("/login");
+            }}
+          >Sign-Out</li>
         </ul>
       </div>
       {tab === "Settings" && (
