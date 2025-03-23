@@ -6,7 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import { ToastContainer, toast } from "react-toastify";
 import Activities from "./ActivityProfile";
 import ActivityProfile from "./ActivityProfile";
-import { removeToken, removeUser } from "../services/localStorageService";
+import { getUser, removeToken, removeUser } from "../services/localStorageService";
 import { useNavigate } from "react-router";
 
 export default function ProfileDisplay( {user, isOwner}) {
@@ -59,13 +59,15 @@ export default function ProfileDisplay( {user, isOwner}) {
           >
             Settings
           </li>
-          <li className="px-3 py-1 cursor-pointer"
+          {user.id === getUser().id && (
+            <li className="px-3 py-1 cursor-pointer"
             onClick={() => {
               removeToken();
               removeUser();
               navigate("/login");
             }}
           >Sign-Out</li>
+          )}
         </ul>
       </div>
       {tab === "Settings" && (
