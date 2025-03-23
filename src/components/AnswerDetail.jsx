@@ -50,7 +50,10 @@ export default function AnswerDetail({
         let element = document.getElementById(answerId);
         let currentValue = parseInt(element.innerText, 10) || 0;
         element.innerText = currentValue + 1;
-      });
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");             
+        }});
   };
 
   const acceptAnswer = (answerId) => {
@@ -66,7 +69,10 @@ export default function AnswerDetail({
       )
       .then((response) => {
         setIsAccepted(true);
-      });
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");             
+        }});
   };
 
   const handleEdit = () => {

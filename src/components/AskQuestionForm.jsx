@@ -64,7 +64,10 @@ export default function AskQuestionForm() {
       axios.delete(`${BaseUrl.uri}/image`, {
         data: {url : imageSrc},
         headers: { Authorization: `Bearer ${token}` },
-      });
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");             
+        }});
     }
     setImageList(newImages);
     setDetails(content);
@@ -148,7 +151,9 @@ export default function AskQuestionForm() {
         insertToEditor(response.data.data.url, order);
       } 
     } catch (error) {
-      console.error("Lỗi khi upload ảnh:", error);
+      if (error.response.status === 401) {
+        navigate("/login");
+      }
     }
   };
 
@@ -190,8 +195,11 @@ export default function AskQuestionForm() {
       } else {
         toast("Failed to submit question", { type: "error" });
       }
-    }).catch(() => {
+    }).catch((error) => {
       toast("Failed to submit question", { type: "error" });
+      if (error.response.status === 401) {
+        navigate("/login");
+      }
     })
   };
 
@@ -204,7 +212,10 @@ export default function AskQuestionForm() {
       axios.delete(`${BaseUrl.uri}/image`, {
         data: {url : imageSrc},
         headers: { Authorization: `Bearer ${token}` },
-      });
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");             
+        }});
     }
     setImageExpectingList(newImages);
     setExpectedResult(content);

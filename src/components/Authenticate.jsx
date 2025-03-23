@@ -25,11 +25,17 @@ export default function Authenticate() {
             },
           }).then((response) => {
             setUser(response.data.data);
-          });
+          }).catch((error) => {
+            if (error.response.status === 401) {
+              navigate("/login");             
+            }});
             
           }
         }
         ).catch((error) => {
+          if (error.response.status === 401) {
+            navigate("/login");
+          }
         });
     }
   }, []); 

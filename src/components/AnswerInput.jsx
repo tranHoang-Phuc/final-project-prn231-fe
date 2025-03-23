@@ -108,7 +108,10 @@ export default function AnswerInput({setNewAnswer, questionId}) {
       axios.delete(`${BaseUrl.uri}/image`, {
         data: {url : imageSrc},
         headers: { Authorization: `Bearer ${token}` },
-      });
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");             
+        }});
     }
     setImageList(newImages);
     setDetails(content);
@@ -133,7 +136,10 @@ export default function AnswerInput({setNewAnswer, questionId}) {
           type: "success",
         });
         navigate(`/questions/detail/${questionId}`);
-      })
+      }).catch((error) => {
+        if (error.response.status === 401) {
+          navigate("/login");             
+        }})
 
   };
   return (
