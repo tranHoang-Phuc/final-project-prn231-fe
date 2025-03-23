@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import AskedQuestionsList from "./AskedQuestionsList";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { BaseUrl } from "../configurations/config";
 import { getToken } from "../services/localStorageService";
 
 export default function ActivityProfile() {
+  const navigate = useNavigate();
   const token  = getToken();
   const [menu, setMenu] = useState("asked");
   const [questions, setQuestions] = useState(null);
@@ -22,7 +23,11 @@ export default function ActivityProfile() {
           })
           .then((response) => {
             setQuestions(response.data.data.questions);
-          })
+          }).catch((error) => {
+            if (error.response.status === 401) {
+              navigate("/login");             
+            }
+          });
       } else {
         axios
           .get(`${BaseUrl.uri}/question/asked`, {
@@ -32,7 +37,11 @@ export default function ActivityProfile() {
           })
           .then((response) => {
             setQuestions(response.data.data.questions);
-          });
+          })
+          .catch((error) => {
+            if (error.response.status === 401) {
+              navigate("/login");             
+            }});
       }
     } else {
       if (alias) {
@@ -45,7 +54,10 @@ export default function ActivityProfile() {
           })
           .then((response) => {
             setQuestions(response.data.data.questions);
-          })
+          }).catch((error) => {
+            if (error.response.status === 401) {
+              navigate("/login");             
+            }});
       } else {
         axios
           .get(`${BaseUrl.uri}/question/answered`, {
@@ -55,7 +67,10 @@ export default function ActivityProfile() {
           })
           .then((response) => {
             setQuestions(response.data.data.questions);
-          });
+          }).catch((error) => {
+            if (error.response.status === 401) {
+              navigate("/login");             
+            }});
       }
     }
   }, [menu]);
