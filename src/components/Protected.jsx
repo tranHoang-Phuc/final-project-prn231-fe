@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getToken } from "../services/localStorageService";
 import axios from "axios";
 import { BaseUrl } from "../configurations/config";
+import Login from "../pages/Login";
 
 export default function Protected({ children }) {
   const navigate = useNavigate();
@@ -37,5 +38,5 @@ export default function Protected({ children }) {
   }, [token, navigate]);
 
 
-  return isAuthenticated ? children : null;
+  return  <Login />;
 }
