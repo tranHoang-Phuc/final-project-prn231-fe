@@ -11,6 +11,7 @@ import Question from "./pages/Question";
 import EditQuestion from "./pages/EditQuestion";
 import Profile from "./pages/Profile";
 import Users from "./pages/Users";
+import EditAnswer from "./pages/EditAnswer";
 import { DataProvider } from "./components/DataProvider";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/question/edit/:id" element={<EditQuestion />} />
           <Route path="/profile/:alias?" element={<Profile />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/questions/:questionId/answers/:id?/edit" element={<EditAnswer />} />
         </Routes>
       </Router>
     </DataProvider>

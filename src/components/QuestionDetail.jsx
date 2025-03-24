@@ -238,7 +238,7 @@ export default function QuestionDetail({
       <div className="max-w-4xl mx-auto  bg-white p-5">
         <h2 className="text-2xl font-normal ">{answers.length} Answers</h2>
       </div>
-      {answers.map((answer) => (
+      { answers && answers.map((answer) => (
         <AnswerDetail
           key={answer.id}
           id={answer.id}
@@ -252,7 +252,7 @@ export default function QuestionDetail({
           author={createdUser.id}
         />
       ))}
-      {newAnswer && (
+      {newAnswer && newAnswer && (
         <AnswerDetail
           key={newAnswer.id}
           id={newAnswer.id}
