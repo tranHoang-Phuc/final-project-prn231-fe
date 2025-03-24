@@ -36,7 +36,6 @@ export default function Protected({ children }) {
     }
   }, [token, navigate]);
 
-  if (isLoading) return <p>Loading...</p>;
 
   return isAuthenticated ? children : null;
 }
