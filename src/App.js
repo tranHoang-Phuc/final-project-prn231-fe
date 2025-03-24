@@ -20,25 +20,34 @@ function App() {
     <DataProvider>
       <Router>
         <Headers />
-        <Protected>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/authenticate" element={<Authenticate />} />
-            <Route path="/question/ask" element={<QuestionCreation />} />
-            <Route path="/questions/:tagged?/:tagName?" element={<Questions />} />
-            <Route path="/tags" element={<Tags />} />
-            <Route path="/questions/detail/:id" element={<Question />} />
-            <Route path="/question/edit/:id" element={<EditQuestion />} />
-            <Route path="/profile/:alias?" element={<Profile />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/questions/:questionId/answers/:id?/edit" element={<EditAnswer />} />
-          </Routes>
-        </Protected>
+        <Routes>
+          {/* Các route không cần bảo vệ */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/authenticate" element={<Authenticate />} />
+
+          {/* Các route cần bảo vệ */}
+          <Route
+            path="/*"
+            element={
+              <Protected>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/question/ask" element={<QuestionCreation />} />
+                  <Route path="/questions/:tagged?/:tagName?" element={<Questions />} />
+                  <Route path="/tags" element={<Tags />} />
+                  <Route path="/questions/detail/:id" element={<Question />} />
+                  <Route path="/question/edit/:id" element={<EditQuestion />} />
+                  <Route path="/profile/:alias?" element={<Profile />} />
+                  <Route path="/users" element={<Users />} />
+                  <Route path="/questions/:questionId/answers/:id?/edit" element={<EditAnswer />} />
+                </Routes>
+              </Protected>
+            }
+          />
+        </Routes>
       </Router>
     </DataProvider>
-  );  
+  );
 }
-
 
 export default App;
