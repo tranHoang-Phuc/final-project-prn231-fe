@@ -5,6 +5,7 @@ import { DataContext } from "../components/DataProvider";
 import SSEClient from "../hooks/SSEClient";
 
 export default function Home() {
+  
   const { sharedData, searchString } = useContext(DataContext);
   return (
     <>
