@@ -1,11 +1,12 @@
 import React from "react";
-import { ArrowUp, Check } from "lucide-react";
+import { ArrowUp, Check, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BaseUrl } from "../configurations/config";
 import axios from "axios";
 import { getToken, getUser } from "../services/localStorageService";
 import { isBelongTo, isOwner } from "../services/inbound";
+import { motion } from "framer-motion";
 
 export default function AnswerDetail({
   id,
@@ -24,6 +25,7 @@ export default function AnswerDetail({
   const [isEditing, setIsEditing] = useState(false);
   const isBelong = isBelongTo(createdUser.id);
   const [newContent, setNewContent] = useState(content);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   useEffect(() => {
     document.querySelectorAll(".ql-syntax").forEach((el) => {
       el.classList.add(
@@ -75,12 +77,14 @@ export default function AnswerDetail({
         }});
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
+
+
+  const handleDelete = () => {
+    setShowConfirmDeleteModal(true);
   };
   return (
     <>
-      <div className="max-w-4xl mx-auto border-b border-gray-300 bg-white p-5">
+      <div id={id} className="max-w-4xl mx-auto border-b border-gray-300 bg-white p-5">
         { !isAccepted && getUser().id === author && (
           <button
             onClick={() => acceptAnswer(id)}
@@ -93,11 +97,17 @@ export default function AnswerDetail({
           <div>
             <button
               className="text-blue-500 border border-blue-500 bg-red-white p-2 mb-2 rounded-xl mr-3"
-              onClick={handleEdit}
+              onClick={() => {
+                  console.log("edit" + id);
+                  console.log(typeof id);
+                  navigate(`/questions/${questionId}/answers/${id}/edit`);
+              }}
             >
               Edit
             </button>
-            <button className="text-white border border-red-500 bg-red-500 p-2 mb-2 rounded-xl">
+            <button className="text-white border border-red-500 bg-red-500 p-2 mb-2 rounded-xl"
+              onClick={handleDelete}
+            >
               Delete
             </button>
           </div>
@@ -130,7 +140,7 @@ export default function AnswerDetail({
                 <li>
                   <button className=" px-2 py-2 ">
                     <Check size={24} className="text-green-500" />
-                  </button>
+                  </button> 
                 </li>
               )}
             </ul>
@@ -169,6 +179,50 @@ export default function AnswerDetail({
           </div>
         </div>
       </div>
+      {showConfirmDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="bg-white p-6 rounded-2xl shadow-xl w-80 text-center"
+          >
+            <button
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+              onClick={() => setShowConfirmDeleteModal(false)}
+            >
+              <X size={20} />
+            </button>
+            <h2 className="text-lg font-semibold mb-4">Do you want to delete?</h2>
+            <div className="flex justify-between">
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  axios
+                    .delete(`${BaseUrl.uri}/answer/${id}`, {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      },
+                    })
+                    .then(() => {
+                      // navigate(`/profile`);
+                    });
+                  setShowConfirmDeleteModal(false);
+                  window.location.reload();
+                }}
+              >
+                Yes
+              </button>
+              <button
+                className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                onClick={() => setShowConfirmDeleteModal(false)}
+              >
+                No
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </>
   );
 }
