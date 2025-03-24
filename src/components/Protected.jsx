@@ -38,5 +38,5 @@ export default function Protected({ children }) {
   }, [token, navigate]);
 
 
-  return  <Login />;
+  return isAuthenticated ? children : <Login />;
 }
